@@ -1,6 +1,8 @@
 ---
 title: "Literate Analysis with Ocean Water Samples"
 subtitle: "coreR Session 05 — Section 5.7 Practice"
+author: "Esha Prasad"
+date: "2026-02-12"
 format:
   html:
     toc: true
@@ -24,6 +26,10 @@ The seawater chemistry dataset used here is `BGchem2008data.csv` (downloaded pre
 
 You will explore the nitrogen to phosphate ratio, which indicates the health of the ocean ecosystem. <https://beal-agulhas.earth.miami.edu/teaching/courses/lecture-five/index.html>
 
+# Why we Care About the Redfield Ratio
+
+The Redfield Ratio is a ratio that measures the concentration of nitrogen and phosphorus against each other, and the typical ratio of N/P is around 16:1 for healthy marine environments. In the paper, it said that this ratio is a result of plankton on the surface of the ocean interacting with the nutrients that come from the deep ocean. When this ratio is thrown off, it can be an indication that something is wrong with the ocean environment the sample came from. It can be an indication of global warming or an imbalance within the ocean.
+
 ## Setup
 
 Best practice: put all `library()` calls in one chunk near the top so collaborators can see what packages are required.
@@ -40,17 +46,17 @@ Quarto runs R in the same way as a script: objects only exist after the chunks t
 Using `here()` is a convenient way to build paths relative to your project root (e.g., your `.qmd` might live in `scripts/` while data lives in `data/`).
 
 ```{r}
-bg_chem <- read_csv(here::here("data", "BGchem2008data.csv"))
+bg_chem_dat <- read.csv(file = "C:/Users/epras/OneDrive/Desktop/BIO806/import-template-enprasad_2/data/raw/BGchem2008data.csv")
 ```
 
 (Optional) Quick peek at the data:
 
 ```{r}
 # Uncomment if you want more inspection output
- names(bg_chem)
-# str(bg_chem)
-# head(bg_chem)
-# summary(bg_chem)
+#names(bg_chem_dat)
+#str(bg_chem_dat)
+head(bg_chem_dat)
+summary(bg_chem_dat)
 ```
 
 # Analysis
@@ -62,10 +68,10 @@ As the “analysis”, we’ll calculate a few simple summary statistics and exa
 Compute mean nutrient values (using `na.rm = TRUE` so missing values don’t break the calculation).
 
 ```{r}
-nitrate <- mean(bg_chem$NO3, na.rm = TRUE)
-nitrite <- mean(bg_chem$NO2, na.rm = TRUE)
-amm     <- mean(bg_chem$NH4, na.rm = TRUE)
-phos    <- mean(bg_chem$P,   na.rm = TRUE)
+nitrate <- mean(bg_chem_dat$NO3, na.rm = TRUE)
+nitrite <- mean(bg_chem_dat$NO2, na.rm = TRUE)
+amm     <- mean(bg_chem_dat$NH4, na.rm = TRUE)
+phos    <- mean(bg_chem_dat$P,   na.rm = TRUE)
 ```
 
 ## Calculate mean Redfield ratio
@@ -85,13 +91,15 @@ Finally, create a simple base R plot that shows the relationship between phospha
 
 ```{r}
 plot(
-  bg_chem$P,
-  bg_chem$NO2 + bg_chem$NO3 + bg_chem$NH4,
+  bg_chem_dat$P,
+  bg_chem_dat$NO2 + bg_chem_dat$NO3 + bg_chem_dat$NH4,
   xlab = "Phosphate (P)",
   ylab = "Total nitrogen (NO2 + NO3 + NH4)",
   main = "Ocean water samples: total N vs P"
 )
 ```
+
+This plot shows the ratio of nitrogen to phosphorous in this dataset at different locations. There are some outliers that have a high nitrogen ratio compared to a lower amount of phosphorous. These points of data could come from deep ocean analysis, where nitrogen concentration is much greater than when sampling is done closer to the surface.
 
 # Conclusion
 
