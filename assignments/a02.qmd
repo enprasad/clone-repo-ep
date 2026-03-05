@@ -1,0 +1,25 @@
+---
+title: "Assignment a02 - Examining the Tidiness of Research Data"
+date: "03-04-26"
+name: "Esha Prasad"
+format: html
+---
+
+### Introduction
+
+The data I work with in my lab focuses on looking at different species of organisms and their relative abundance in the hot spring we study. Our data comes from extracted DNA that is sequenced through Illumina and then subsequently binned using programs such as bowtie2, gtdbtk, and kraken. The table that I've chosen provides the name of the bin, the organism found within it, and that organism's relative abundance across different time periods and sites.
+
+### Data
+
+```{r}
+lab_data <- read.csv("C:/Users/epras/OneDrive/Desktop/BIO806/import-template-enprasad_2/data/raw/rpkg_output_taxonomy_db_1.csv")
+head(lab_data)
+```
+
+### Analysis
+
+This data appears as somewhat tidy to me, but it could use some refining if I want to do different analyses, like making heatmaps with it. The primary key for this dataset would be "name", since no two bins are exactly the same. A possible foreign key could be classification, since this key is present in other lab datasets.
+
+### Conclusion
+
+My lab's data is somewhat tidy, but I believe that I need to clean it up and sort it out before I start trying to make figures or graphs with it. The columns "name" and "classification" could use some cleaning up, and could possibly use some rearangement to make things more visually appealing.
