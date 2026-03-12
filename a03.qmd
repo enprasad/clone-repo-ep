@@ -1,0 +1,62 @@
+---
+title: "Assignment a03 - Cleaning and Wrangling Data"
+name: "Esha Prasad"
+date: "03-05-26"
+editor: visual
+---
+
+## Introduction
+
+Managing data can be difficult, especially when dealing with large datasets and/or data that you did not organize yourself. In this chapter of the textbook, we learned that there are different functions that you can use in RStudio to make data easier to work with. These functions can change the names and values of columns, change how the data is displayed, or can simply remove columns that you do not need for specific parts of your analysis.
+
+## Data
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(readr)
+catch_original <- read.csv("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1")
+catch_data <- catch_original %>% select(Region, Year, Chinook, Sockeye, Coho, Pink, Chum)
+```
+
+## Analysis
+
+`catch_original <- read_csv("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1")` This line of code imports the dataset from the source website into RStudio so that you can use it for analysis.
+
+`mean_region <- catch_original %>%` `select(-All, -notesRegCode) %>%`
+
+The `select()` function here means that the columns "all" and "notesRegCode" are being left out, since they have a "-" sign next to them.
+
+`mutate(Chinook = if_else(Chinook == "I", "1", Chinook)) %>%` `mutate(Chinook = as.numeric(Chinook)) %>%`
+
+The `mutate()` function here is being used together with the `if_else` function, and this makes it so that any value in "Chinook" that is equal to "I" is changed to "1". The function `as.numeric()` changes all the values in the "Chinook" column to a numeric.
+
+`pivot_longer(-c(Region, Year),`
+
+The function `pivot_longer()` changes the shape of the data, and can move columns from being above to being on the side.
+
+`names_to = "species",                 values_to = "catch") %>%`
+
+The `names_to` and `values_to` functions transfer over the names and values of the columns you are pivoting.
+
+`mutate(catch = catch*1000) %>%`
+
+The `mutate()` function changes the values of the column it is given, which in this case would be "catch". The values of "catch" are being multiplied by 1000.
+
+`group_by(Region) %>%`
+
+The `group_by()` function is telling R to make different groups for each unique value in the "Region" column.
+
+`summarize(mean_catch = mean(catch)) %>%`
+
+The `summarize()` function used together with the `mean()` function here makes it so that the results of mean(catch) are put into a table, and that the column "mean_catch" will have the value of mean(catch).
+
+`arrange(desc(mean_catch))`The `arrange()` function makes it so that the values of your data are put into ascending order, by default. By putting the parameter `desc()` within it, it makes it so that the values go in descending order instead.
+
+`head(mean_region)`
+
+The `head()` function shows the first five rows of data for the dataset that you give it.
+
+## Discussion
+
+The mean_catch data is a value that shows the mean number of salmon caught within a certain region. It takes into account the 5 different salmon types and calculates the mean number of them caught per region for all 18 regions in the catch data table.
