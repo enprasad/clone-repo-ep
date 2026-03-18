@@ -1,0 +1,72 @@
+---
+title: "a04"
+author: "Esha Prasad"
+date: "03-16-26"
+editor: visual
+---
+
+## Introduction
+
+In this lab, we are looking at how to utilize joins to make multiple data sets into one cohesive data set that can easily be summarized and used to interpret data. By doing the joins activity, we have already merged 4 data sets, "birds", "sites", "surveys", and "taxalist" into one dataset, "bird_obs_subset". We will use this dataset to attempt to find the number of birds observed by park and month.
+
+## Data
+
+```{r}
+library(readr)
+library(dplyr)
+library(here)
+library(lubridate)
+```
+
+```{r}
+bird_observations <- read.csv("52_pp52_birds_1.csv")
+sites <- read.csv("52_pp52_sites_1.csv")
+surveys <- read.csv("52_pp52_surveys_1.csv")
+taxalist <- read.csv("52_pp52_taxalist_1.csv")
+
+birds_subset <- bird_observations %>% 
+  filter(species_id %in% c("BHCO", "RWBL")) %>% 
+  filter(site_id %in% c("LI-W", "NU-C"))
+
+bird_observations <- bird_observations %>% 
+  rename(bird_obs_notes = notes)
+
+bird_obs_subset <- bird_observations %>% 
+  full_join(y = taxalist, by = "species_id") %>% 
+  full_join(y = sites, by = "site_id") %>% 
+  full_join(y = surveys, by = c("site_id", "survey_id")) %>%  
+  select(survey_date, common_name, park_name, bird_count, observer)
+
+bird_obs_subset <- bird_obs_subset %>% 
+  mutate(observer = if_else(condition = observer == "Josh Burns", 
+                            true = "J. Burns", 
+                            false = observer))
+```
+
+```{r}
+bird_obs_subset <- bird_obs_subset %>% 
+     mutate(month = month(survey_date, label=TRUE))
+
+bird_obs_subset <- bird_obs_subset %>% relocate(month, .after = survey_date)
+
+target <- c("Lindo", "Orme", "Palomino", "Sonrisa")
+bird_obs_subset <- filter(bird_obs_subset, park_name %in% target)
+
+bird_obs_subset %>%
+     group_by(park_name) %>%
+     summarize(mean_bird = mean(bird_count, na.rm = TRUE))
+bird_obs_subset %>%
+           group_by(month) %>%
+           summarize(mean_bird = mean(bird_count, na.rm = TRUE))
+bird_obs_subset %>%
+                 group_by(month, park_name) %>%
+                 summarize(mean_bird = mean(bird_count, na.rm = TRUE))
+```
+
+## Analysis
+
+From the three dataframes that were produced, we can see that Lindo Park has the highest mean number of bird sightings and that September has the highest mean number of bird sightings out of the observed months. Orme and Palomino Park both have a similar mean number of bird sightings. The September data for Lindo Park is an outlier relative to the other datapoints, and skews the numbers in favor of Lindo Park.
+
+## Summary
+
+The final dataframe does give me the outcome that I expected, which is a summary of the mean number of birds per park, but one of the parks, Sonrisa, is missing and I am not sure why. It may be because it did not have any values in bird_count, and was removed when using the "na.rm" function, which removes values of "NA". This dataframe is informative in that it gives an understanding that Lindo Park has twice as many birds on average compared to the Orme or Palomino parks. We are also able to see that September had the highest mean number of bird sightings, and that the highest mean number of bird sightings was in Lindo Park in September. I would improve this wrangling process by putting all the functions above into one big function so that it can be reproduced using different park names easily.
