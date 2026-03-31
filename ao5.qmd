@@ -1,0 +1,98 @@
+---
+title: "ao5.qmd"
+author: "Esha Prasad"
+date: "03-30-26"
+editor: visual
+---
+
+## Introduction
+
+Plotting data is an important part of the scientific process as it allow for a visual representation of the data you have collected. It allows you to present your data in a way that makes it easier for a viewer to understand. In this lab, we will work through how to make plots and graphs using ggplot2, and how to make maps with a package called 'leaflet'. The data we will use comes from socioecological monitoring on the Sacramento-San Joaquin Delta, located just outside the East Bay.
+
+## Data
+
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(forcats) 
+library(ggplot2)
+library(leaflet) 
+library(scales)
+library(janitor) 
+library(viridis)
+
+delta_visits_raw <- read.csv(here::here("data/Socioecological_monitoring_data.csv"))
+
+delta_visits <- delta_visits_raw %>% 
+     janitor::clean_names()
+
+visits_long <- delta_visits %>% 
+     pivot_longer(cols = c(sm_boat, med_boat, lrg_boat, bank_angler, scientist, cars),
+                  names_to = "visitor_type",
+                  values_to = "quantity") %>%
+     rename(restore_loc = eco_restore_approximate_location) %>% 
+     select(-notes)
+
+daily_visits_loc <- visits_long %>%
+    group_by(restore_loc, date, visitor_type) %>% 
+    summarise(daily_visits = sum(quantity))
+
+daily_visits_totals <- daily_visits_loc %>% 
+    group_by(restore_loc) %>%
+    mutate(n = sum(daily_visits)) %>% 
+    ungroup() %>%
+    mutate(restore_loc = fct_reorder(restore_loc, desc(n)))
+```
+
+### Graph
+
+```{r, fig.width=10}
+my_theme <- theme_bw(base_size = 16) +
+    theme(legend.position = "bottom",
+          axis.ticks.y = element_blank())
+# this chunk of code allows us to have a set themethat we can put into any graph
+
+p9 <- ggplot(data = daily_visits_totals, #telling what data to use
+       aes(x = daily_visits, y = restore_loc, #establishing where data will come from
+           fill = visitor_type)) + #givigin different colors to different visitor types
+    geom_col() + #telling what kind of graph to use
+    scale_fill_viridis_d() + # telling what color palette to use
+    labs(x = "Number of Visits", 
+         y = "Restoration Location", # putting on x and y labels 
+         fill = "Type of Visitor", # filling in colors for the figure legend 
+         title = "Total Number of Visits to Delta Restoration Areas by visitor type", # titling the graph
+         subtitle = "Sum of all visits during study period") + # giving the graph a subtitle for context
+    scale_x_continuous(breaks = seq(0,120, 20), expand = c(0,0)) + # removes white spaces on the graph to make it look better
+    my_theme # loading in the personalized theme 
+
+p9
+```
+
+### Map
+
+```{r}
+library(leaflet)
+
+locations <- visits_long %>%
+    distinct(restore_loc, .keep_all = TRUE) %>%
+    select(restore_loc, latitude, longitude)
+
+leaflet(locations) %>%
+    addTiles() %>% # adds base tiles to the map
+    addMarkers(
+        lng = ~ longitude, # calls on the longitude from the 'locations' data set
+        lat = ~ latitude, # calls on the latitude from the 'locations' data set
+        popup = ~ restore_loc
+    )
+```
+
+## Analysis and Discussion
+
+According to the graph, the Prospect area had the highest number of visitors, with the 'medium boats' group being the most common visitor at that location. Sherman Island had the least number of visitors. These observations are easy to see due to the way the graph is formatted. The style of the graph clearly shows you the locations with the least amount of visitors all the way to the most, and the different colors allow you to easily see the diversity of the visitors.
+
+I chose this style of graph because I felt it best visualized the data that was trying to be shown. The ascending order and the coloring do a good job of portraying the data in a way that I believe is easy to understand even if someone with no prior knowledge of the topic were to look at it. I chose the map that I did because it was easy to look at and the colors worked the best for me.
+
+## Summary
+
+Plotting data is important to scientific work, and learning how to format it to look as pleasing to the eye as possible is just as important. In this lab, I learned various ways to clean data, make dataframes, and then use that data to make graphs. I also learned how to make those graphs appealing to look at by using different commands within the code.
