@@ -22,8 +22,7 @@ library(scales)
 library(janitor) 
 library(viridis)
 
-delta_visits_raw <- read.csv(here::here("data/Socioecological_monitoring_data.csv"))
-
+delta_visits_raw <- read.csv("Socioecological_monitoring_data.csv")
 delta_visits <- delta_visits_raw %>% 
      janitor::clean_names()
 
