@@ -1,10 +1,12 @@
 
+---
 title: "index-new.qmd"
 author: "Esha Prasad"
 listing:
   contents: assignments
   sort: "date asc"
   fields: [title, date]
+---
 
 
 *Hello World*
