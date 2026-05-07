@@ -1,10 +1,7 @@
 
 ---
-title: "index-new.qmd"
-listing:
-  contents: assignments
-  sort: "date asc"
-  fields: [title, date]
+# Clone Repository for BIO 806
+## Author: Esha Prasad
 ---
 
 
