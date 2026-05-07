@@ -1,18 +1,40 @@
-# R Portfolio
+---
+title: "index-new.qmd"
+listing:
+  contents: assignments
+  sort: "date asc"
+  fields: [title, date]
+---
 
-This repository contains your course portfolio.
+*Hello World*
 
-## Weekly workflow
-1. Create a new branch (e.g. `a03`)
-2. Add a new file in `assignments/` (e.g. `a03.qmd`)
-3. Commit your changes
-4. Open a Pull Request into `main`
+Welcome!\
+This is my portfolio for BIO 806 - Data Science!.
 
-Your assignment is submitted when the PR is opened.
+# Course Assignments
 
-## Rules
-- One `.qmd` per assignment
-- Use relative paths only
-- Your PR must render successfully
+Throughout the course, we have gone over a variety of topics. Here is a list of everything we've covered this semester.
 
-Starting later in the course, we will use `renv` for reproducibility.
+- Installing R and Git, and understanding how to operate in both spaces
+
+- Setting up a GitHub repository, and learning how to do the commit -\> pull -\> push workflow for our assignments
+
+- The value of reproducibility and why it is needed in a coding environment
+
+- Cleaning and Wrangling Data
+
+- Using joins to combine data sets
+
+- Data Visualization
+
+- Publishing to the Web and collaborating with another coder through GitHub
+
+- Working with Spatial Data
+
+## HTML Links to Assignments
+
+Here are the html links to some of the assignments that I enjoyed doing the most
+
+[Lobster Report](https://enprasad.github.io/esha-andy/analysis/lobster-report.html)
+
+[Plotting Data](https://github.com/enprasad/clone-repo-ep/blob/main/ao5.html)
