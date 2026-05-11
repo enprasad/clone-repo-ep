@@ -1,5 +1,5 @@
 ---
-title: "index-new.qmd"
+title: "index.qmd"
 listing:
   contents: assignments
   sort: "date asc"
